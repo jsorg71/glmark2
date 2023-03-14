@@ -37,12 +37,18 @@ public:
         ready_(shader.ready_),
         valid_(shader.valid_) {}
     Shader(Shader&& shader) noexcept:
-        handle_(std::exchange(shader.handle_, 0)),
-        type_(std::exchange(shader.type_, 0)),
+        handle_(shader.handle_),
+        type_(shader.type_),
         source_(std::move(shader.source_)),
         message_(std::move(shader.message_)),
-        ready_(std::exchange(shader.ready_, false)),
-        valid_(std::exchange(shader.valid_, false)) {}
+        ready_(shader.ready_),
+        valid_(shader.valid_)
+    {
+        shader.handle_ = 0;
+        shader.type_ = 0;
+        shader.ready_ = false;
+        shader.valid_ = false;
+    }
     Shader(unsigned int type, const std::string& source);
     ~Shader();
 

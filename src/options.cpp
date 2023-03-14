@@ -24,6 +24,7 @@
 #include <cstring>
 #include <cstdio>
 #include <getopt.h>
+#include <stdexcept>
 
 #include "options.h"
 #include "util.h"

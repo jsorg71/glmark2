@@ -85,7 +85,7 @@ GLVisualConfig::match_score(const GLVisualConfig &target) const
     score += score_component(blue, target.blue, 4);
     score += score_component(alpha, target.alpha, 4);
     score += score_component(depth, target.depth, 1);
-    score += score_component(stencil, target.stencil, 0);
+    //score += score_component(stencil, target.stencil, 0);
     score += score_component(buffer, target.buffer, 1);
     score += score_component(samples, target.samples, -1);
 

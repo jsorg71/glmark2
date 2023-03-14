@@ -65,7 +65,7 @@ std::string escape_csv_text(const std::string &str)
 class CSVResultsFile : public ResultsFile
 {
 public:
-    CSVResultsFile(std::ofstream &&fs) : fs{std::move(fs)} {}
+    CSVResultsFile(std::string fs_name) : fs(fs_name) { }
 
     std::string type() override { return "CSV"; }
 
@@ -125,7 +125,7 @@ std::string xml_text_escape(const std::string &str)
 class XMLResultsFile : public ResultsFile
 {
 public:
-    XMLResultsFile(std::ofstream &&fs) : fs{std::move(fs)} {}
+    XMLResultsFile(std::string fs_name) : fs(fs_name) { }
 
     std::string type() override { return "XML"; }
 
@@ -182,7 +182,7 @@ std::string get_file_extension(const std::string &str)
 }
 
 std::unique_ptr<ResultsFile> ResultsFile::singleton =
-    std::make_unique<NullResultsFile>();
+    std::unique_ptr<NullResultsFile>(new NullResultsFile());
 
 bool ResultsFile::init(const std::string &file)
 {
@@ -198,6 +198,7 @@ bool ResultsFile::init(const std::string &file)
         Log::error("Failed to open results file %s\n", file.c_str());
         return false;
     }
+    fs.close();
 
     if (ext.empty())
     {
@@ -208,11 +209,13 @@ bool ResultsFile::init(const std::string &file)
 
     if (ext == ".csv")
     {
-        ResultsFile::singleton = std::make_unique<CSVResultsFile>(std::move(fs));
+        ResultsFile::singleton =
+            std::unique_ptr<CSVResultsFile>(new CSVResultsFile(file));
     }
     else if (ext == ".xml")
     {
-        ResultsFile::singleton = std::make_unique<XMLResultsFile>(std::move(fs));
+        ResultsFile::singleton =
+            std::unique_ptr<XMLResultsFile>(new XMLResultsFile(file));
     }
     else
     {
